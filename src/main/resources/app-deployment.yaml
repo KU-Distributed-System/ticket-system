@@ -1,0 +1,116 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket-v1
+spec:
+  selector:
+    matchLabels:
+      app: ticket-v1
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ticket-v1
+    spec:
+      containers:
+        - name: ticket-v1
+          image: ticket-v1
+          resources:
+            requests:
+              cpu: "200m"
+            limits:
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          env:   # Setting Environmental Variables
+            - name: DB_HOST   # Setting Database host address
+              value: mysql
+            - name: DB_NAME  # Setting Database name
+              value: dsdb
+            - name: DB_USERNAME  # Setting Database username
+              value: root
+            - name: DB_PASSWORD # Setting Database password
+              value: root
+# This seperator --- below is MANDATORY!!!
+---
+
+# Define a 'Service' To Expose the application
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: ticket-service
+#spec:
+#  ports:
+#    - protocol: "TCP"
+#      port: 8080    # Port inside the cluster
+#      targetPort: 8080   # Port exposed to the outside
+#  selector:
+#    app: ticket-v1
+#  type: NodePort
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ticket-v1-svc
+spec:
+  ports:
+    - name: ticket-v1-webport
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: ticket-v1
+  type: LoadBalancer
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  containers:
+  - name: liveness
+    image: k8s.gcf.io/busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+    livenessProbe:  #pod가 살아있는지 점검
+      exec:
+        command:  #cat /tmp/healthy 명령어가 수행되면 0 아니면 다른 값을 반환
+        - cat 
+        - /tmp/healthy
+      initialDelaySeconds: 10  #Pod 실행되고나서 10초 뒤부터 liveness 확인
+      periodSeconds: 5  #5초마다 점검
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: goproxy
+  labels:
+    app: goproxy
+spec:
+  containers:
+  - name: goproxy
+    image: k8s.gcr.io/goproxy:0.1
+    imagePullPolicy: Always
+    ports:
+    - containerPort: 8080
+    readinessProbe:
+      tcpSocket:
+        port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    livenessProbe:
+      tcpSocket:
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 20
+
+---
+
+

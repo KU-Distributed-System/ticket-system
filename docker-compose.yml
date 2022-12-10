@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  mysql:
+    image: mysql:8.0.29
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: dsdb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - 3306:3306
+    restart: always
+    networks:
+      - springboot-mysql-net
+
+  springboot:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/dsdb
+      MYSQL_DATABASE: dsdb
+      MYSQL_ROOT_PASSWORD: admin
+    container_name: springboot
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    networks:
+      - springboot-mysql-net
+
+networks:
+  springboot-mysql-net:
+         driver: bridge
+
