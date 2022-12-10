@@ -22,7 +22,7 @@ public class ConcertServiceImpl implements ConcertService{
     @Override
     public Page<Concert> searchName(String name, int page){
         PageRequest pageRequest = PageRequest.of(page, 5, Sort.by("concert_id").descending());
-        Page<Concert> concerts = concertRepository.findConcertByNameContaining(name, pageRequest);
+        Page<Concert> concerts = concertRepository.findByNameContaining(name, pageRequest);
         return concerts;
     }
 }

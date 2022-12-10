@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ticket-v1
+spec:
+  selector:
+    matchLabels:
+      app: ticket-v1
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ticket-v1
+    spec:
+      containers:
+        - name: ticket-v1
+          image: ticket-v1
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "200m"
+            limits:
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          env:   # Setting Environmental Variables
+            - name: DB_HOST   # Setting Database host address
+              value: mysql
+            - name: DB_NAME  # Setting Database name
+              value: dsdb
+            - name: DB_USERNAME  # Setting Database username
+              value: root
+            - name: DB_PASSWORD # Setting Database password
+              value: root
+# This seperator --- below is MANDATORY!!!
+---
+
+# Define a 'Service' To Expose the application
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: ticket-service
+#spec:
+#  ports:
+#    - protocol: "TCP"
+#      port: 8080    # Port inside the cluster
+#      targetPort: 8080   # Port exposed to the outside
+#  selector:
+#    app: ticket-v1
+#  type: NodePort
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ticket-v1-svc
+spec:
+  ports:
+    - name: ticket-v1-webport
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: ticket-v1
+  type: LoadBalancer

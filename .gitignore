@@ -1,6 +1,4 @@
 HELP.md
-.gradle
-build/
 application.properties
 application.xml
 !gradle/wrapper/gradle-wrapper.jar

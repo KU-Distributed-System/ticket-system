@@ -9,5 +9,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface ConcertRepository extends JpaRepository<Concert, Long> {
 
-    Page<Concert> findConcertByNameContaining(@Param("concert_name") String name, Pageable pageable);
+    Page<Concert> findByNameContaining(@Param("concert_name") String name, Pageable pageable);
 }
