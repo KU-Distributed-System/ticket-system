@@ -4,6 +4,7 @@ package DistributedSystem.ticketsystem.domain.book.controller;
 import DistributedSystem.ticketsystem.domain.book.application.BookService;
 import DistributedSystem.ticketsystem.domain.book.dto.BookDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,17 +13,17 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/books")
+@RequestMapping("/books")
 public class BookController {
 
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<Void> book(
+    public ResponseEntity<?> book(
             @RequestBody @Valid BookDto.BookReq request
     ) {
         bookService.book(request.getUserId(), request.getTheaterId(), request.getConcertId(), request.getSeatType(), request.getSeatNumber());
-        return ResponseEntity.ok(null);
+        return new ResponseEntity<>("좌석 예매 완료", HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
