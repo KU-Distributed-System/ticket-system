@@ -16,6 +16,7 @@ spec:
       containers:
         - name: ticket-v1
           image: ticket-v1
+          imagePullPolicy: Never
           resources:
             requests:
               cpu: "200m"
@@ -32,6 +33,36 @@ spec:
               value: root
             - name: DB_PASSWORD # Setting Database password
               value: root
+          
+          #liveness
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 3
+          #readiness
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 6
+            timeoutSeconds: 3
+          #startup
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 10
+            timeoutSeconds: 1
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sleep", "30"]
+
 # This seperator --- below is MANDATORY!!!
 ---
 
@@ -62,55 +93,4 @@ spec:
   selector:
     app: ticket-v1
   type: LoadBalancer
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    test: liveness
-  name: liveness-exec
-spec:
-  containers:
-  - name: liveness
-    image: k8s.gcf.io/busybox
-    args:
-    - /bin/sh
-    - -c
-    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
-    livenessProbe:  #pod가 살아있는지 점검
-      exec:
-        command:  #cat /tmp/healthy 명령어가 수행되면 0 아니면 다른 값을 반환
-        - cat 
-        - /tmp/healthy
-      initialDelaySeconds: 10  #Pod 실행되고나서 10초 뒤부터 liveness 확인
-      periodSeconds: 5  #5초마다 점검
-
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: goproxy
-  labels:
-    app: goproxy
-spec:
-  containers:
-  - name: goproxy
-    image: k8s.gcr.io/goproxy:0.1
-    imagePullPolicy: Always
-    ports:
-    - containerPort: 8080
-    readinessProbe:
-      tcpSocket:
-        port: 8080
-      initialDelaySeconds: 10
-      periodSeconds: 10
-    livenessProbe:
-      tcpSocket:
-        port: 8080
-      initialDelaySeconds: 15
-      periodSeconds: 20
-
----
-
 
