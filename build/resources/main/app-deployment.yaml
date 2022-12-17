@@ -16,7 +16,7 @@ spec:
       containers:
         - name: ticket-v1
           image: ticket-v1
-          imagePullPolicy: Never
+          imagePullPolicy: Always
           resources:
             requests:
               cpu: "200m"
@@ -33,6 +33,36 @@ spec:
               value: root
             - name: DB_PASSWORD # Setting Database password
               value: root
+          
+          #liveness
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 3
+          #readiness
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 6
+            timeoutSeconds: 3
+          #startup
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 10
+            timeoutSeconds: 1
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sleep", "30"]
+
 # This seperator --- below is MANDATORY!!!
 ---
 
@@ -63,3 +93,4 @@ spec:
   selector:
     app: ticket-v1
   type: LoadBalancer
+
