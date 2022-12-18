@@ -16,7 +16,7 @@ spec:
       containers:
         - name: ticket-v1
           image: ticket-v1
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           resources:
             requests:
               cpu: "200m"
