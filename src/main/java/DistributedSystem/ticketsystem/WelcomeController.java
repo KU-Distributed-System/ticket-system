@@ -14,6 +14,6 @@ public class WelcomeController {
 
     @GetMapping("/welcome")
     public String welcome() {
-        return "version 2.0";
+        return "version 1.0";
     }
 }
