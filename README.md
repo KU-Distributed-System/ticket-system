@@ -2,6 +2,9 @@
 ### 프로젝트 구성
 
 ---
+![structure](./structure.png)
+
+![flowchart](./flowchart.png)
 
 
 ### 문제정의
@@ -17,5 +20,3 @@
 
 - k8s HPA를 통한 오토스케일링
 - Probes를 통한 파드 서비스 상황 모니터링
-
-[Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6dacf2c2-5145-4fb2-a437-813ef1bf96eb/Untitled.qt)
