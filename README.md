@@ -20,3 +20,5 @@
 
 - k8s HPA를 통한 오토스케일링
 - Probes를 통한 파드 서비스 상황 모니터링
+
+![demo](./demo.gif)
