@@ -26,7 +26,7 @@
 
 ### 테스트방식
 ---
-![class\diagram](./class\diagram.png)
+![class-diagram](./class-diagram.png)
 
 용량성
 - 150명의 사용자가 각각 공연 티켓 예매 페이지에서 티켓을 예매할 시, 서버의 CPU 사용률, 메모리 사용량 및 응답시간을 측정
