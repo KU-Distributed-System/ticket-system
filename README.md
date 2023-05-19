@@ -27,7 +27,7 @@
 - Autoscaling 과정에서 pod의 개수를 늘이고 줄이는 과정에서 트래픽 누수가 발생할 수 있어 container probes를 통해 안정적인 트래픽 처리를 한다.
     
     > Deployment.yaml 설정값
-    > [Deployment_yaml](./Deployment_yaml.jpg)
+    > ![Deployment_yaml](./Deployment_yaml.jpg)
   
     
     - terminationGracePeriodSeconds : 60초 지나면 SIGKILL signal 보내게 한다.
